@@ -1,6 +1,11 @@
 # First dive into tf and keras
 import tensorflow as tf
 import tensorflow.keras as keras
+import pandas as pd
+import matplotlib
+import matplotlib.pyplot as plt
+matplotlib.use('TkAgg')
+import numpy as np
 
 print(tf.__version__)
 print(keras.__version__)
@@ -51,9 +56,41 @@ print("biases shape", biases.shape)  # Notar que .shape no es un method. Es un a
 # Es buena práctica decirle la input_shape al modelo, pero no es estrictamente necesario. Lo puede inferir al momento del entrenamiento. 
 
 # COMPILANDO EL MODELO:
-model.compile([
+model.compile(
     loss=keras.metrics.sparse_categorical_crossentropy,
-    optimizer=keras.optimizers.SGD,
+    optimizer=keras.optimizers.SGD(),
     metrics=[keras.metrics.sparse_categorical_accuracy]
-])  # Compilo el modelo. Defino la loss function, el método de optimización, y qué métrica quiero usar. 
-# lo de sparse categorical es porque tengo labels definidos (un número del 0 al 9). Si esto estuviera encoded, por ejemplo, (cada target es un vector con todo 0 y un 1 en la posición correspondiente a ese target), no pondría
+)  # Compilo el modelo. Defino la loss function, el método de optimización, y qué métrica quiero usar. 
+# lo de sparse categorical es porque tengo labels definidos (un número del 0 al 9). Si esto estuviera encoded, por ejemplo, (cada target es un vector con todo 0 y un 1 en la posición correspondiente a ese target), no pondría sparse. Sería únicamente categorical.
+
+# FITTEANDO EL MODELO (igual que sci-kit)
+history = model.fit(
+    x=X_train, y=y_train, epochs=30,
+    validation_data=(X_valid, y_valid)
+)
+# OJO! Algo muy piola es que se le puede dar distintos weights a las clases, si nuestro dataset está bised.
+# Pero también se le puede dar distintos pesos a cada registro (si le tengo más fe a algún registro que a otro).
+# el método .fit() devuelve un history object. (ahora tengo dos objetos: el modelo, y el history). 
+print("History params:", history.params)
+print("History values", history.history)  # Esto me devuelve un dictionary cuyos keys son las métricas que definí, y sus values son listas con los valores correspondientes a cada epoch.
+
+# Gráfico de la evolución del algoritmo:
+history_df = pd.DataFrame(history.history)
+history_df.plot(figsize=(8, 5))
+plt.grid(True)
+plt.gca().set_ylim(0, 1)  # gca --> get current axes. method que devuelve los axes del objeto plot.
+plt.show()
+
+# Evaluación del modelo:
+model.evaluate(X_test, y_test)
+
+# Predicciones:
+X_new = X_test[-5:]
+y_prob = model.predict(X_new)
+print("\nProbabilities", y_prob.round(3))  # y_prob es la probabilidad. 
+
+y_pred = model.predict_classes(X_new)  # y_pred es la predicción de la clase (la clase con mayor predicted prob)
+# Como, aparentemente, predict_classes está deprecado, la otra opción es hacer esto:
+np.argmax(model.predict(x), axis=-1)
+print("\nPredictions", y_pred)
+
