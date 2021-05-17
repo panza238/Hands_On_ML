@@ -14,6 +14,8 @@ fashion_mnist = keras.datasets.fashion_mnist
 (X_train_full, y_train_full), (X_test, y_test) = fashion_mnist.load_data()
 print(X_train_full.shape)  # OK. Esto devuelve (60000, 28, 28) ==> 60000 imágenes de 28 pixels por 28 pixels.
 print(X_train_full.dtype)  # 8 bit unsigned integer 
+print(y_test.shape)
+print(y_test.dtype)
 
 # Por default, el dataset MNIST (que está en la DB de keras) viene separado en train y test
 # Como no viene con un dataset de validación, lo creo yo. Me dejo un 10% para validación.
