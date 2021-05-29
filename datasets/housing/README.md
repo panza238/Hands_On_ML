@@ -61,3 +61,20 @@ Note that the block groups are called "districts" in the Jupyter notebooks, simp
     75%        644.000000   1718.000000    602.000000       4.745000  
     max       6210.000000  35682.000000   5358.000000      15.000100
  
+
+Y si pongo algo acá, qué onda?
+
+    >>> python command
+    Standard python output
+
+Y acá sigo escribiendo boludeces...
+
+Mirá qué piola. 
+
+    >>> Así puedo escribir code snippets!
+
+Se entendió?
+    
+    magia... no hace falta ni poner el >>>
+
+OK. Lesson learned. Code Snippets
